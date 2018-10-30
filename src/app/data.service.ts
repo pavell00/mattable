@@ -16,6 +16,7 @@ export class DataService {
   dataUrl = '../assets/all_AD_users_old.json';
   arrEmpl: BehaviorSubject<Employee[]> = new Employee()[0];
   empl: Subject<Employee[]> = new Subject<Employee[]>();
+  empl2: Subject<Employee[]> = new Subject<Employee[]>();
   arr: Employee[]=[];
   arr2: any[]=[];
   
@@ -119,6 +120,38 @@ export class DataService {
       //console.log(this.arr);
     })
     
+  }
+
+  get3(str: string){
+    let one = of(this.http.get<Employee[]>(this.dataUrl));
+
+    this.arr = [];
+    this.empl2.next(this.arr);
+    forkJoin(
+      one.pipe(
+        //tap(r=>console.log(r)),
+        flatMap( r=> r),
+        tap(w => {w.forEach(element => {
+          // || element.MobilePhone.toLowerCase().includes(str) || element.EmailAddress.toLowerCase().includes(str))
+            let res: boolean = false;
+            if (element.Name != null) {
+              if (element.Name.toLowerCase().includes(str.toLowerCase())) res = true
+            }
+            if (element.EmailAddress != null) {
+              if (element.EmailAddress.toLowerCase().includes(str.toLowerCase())) res = true
+            }
+            if (element.MobilePhone != null) {
+              if (element.MobilePhone.toLowerCase().includes(str.toLowerCase())) res = true
+            }
+            if (res) this.arr.push(element);
+            });
+          })
+      )
+    ).subscribe(a => {
+      //console.log(JSON.stringify(a));
+      this.empl2.next(this.arr);
+      //console.log(this.arr);
+    })
   }
 
 }

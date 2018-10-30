@@ -235,6 +235,14 @@ export class AppComponent implements OnInit, OnDestroy {
       })
   }
   
+  get3(str: string) {
+    this.dataService.get3(str);
+    this.dataService.empl2.subscribe(e => {
+       //console.log(e.length);
+      this.dsEmployees = e;
+      })
+  }
+
   onExpandPanel(e: Employee) {
     //console.log(e);
   }
